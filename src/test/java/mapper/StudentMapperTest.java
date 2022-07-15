@@ -24,6 +24,12 @@ public class StudentMapperTest {
         System.out.println("二级缓存是否被启用: " + factory.getConfiguration().isCacheEnabled());
     }
 
+    /*
+        在这里大概说一下 SqlSession.getMapper() 以及之后执行查询的过程
+        SqlSession.getMapper() 方法调用后会经过如下几个类 Configuration -> MapperProxy -> MapperProxyFactory，最终通过 JDK 动态代理拿到对应的 Mapper 接口
+        之后执行 select() 方法，被代理的对象执行的方法都会通过 invoke() 方法，MapperProxy 就是 Mapper 的代理对象，所以最终会执行 MapperProxy.invoke() 方法
+        在 MapperProxy.invoke() 中调用了 MapperMethod.execute()，在这个方法中首先判断 sql 的执行类型(CRUD)，然后调用 sqlSession 对应的方法，之后拿到返回值后再进一步处理，之后拿到最终的返回结果
+     */
     @Test
     public void testEnumTypeHandler() {
         SqlSession sqlSession = factory.openSession(true); // 自动提交事务
@@ -44,9 +50,9 @@ public class StudentMapperTest {
         SqlSession sqlSession = factory.openSession(true); // 自动提交事务
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
         // 重复执行同一sql，后续查询会命中mybatis缓存
-        System.out.println(studentMapper.getStudentById(1));
-        System.out.println(studentMapper.getStudentById(1));
-        System.out.println(studentMapper.getStudentById(1));
+        print(studentMapper.getStudentById(1));
+        print(studentMapper.getStudentById(1));
+        print(studentMapper.getStudentById(1));
 
         sqlSession.close();
     }
@@ -62,9 +68,9 @@ public class StudentMapperTest {
         SqlSession sqlSession = factory.openSession(true); // 自动提交事务
         StudentMapper studentMapper = sqlSession.getMapper(StudentMapper.class);
 
-        System.out.println(studentMapper.getStudentById(1));
-        System.out.println("增加了" + studentMapper.addStudent(buildStudent()) + "个学生");
-        System.out.println(studentMapper.getStudentById(1));
+        print(studentMapper.getStudentById(1));
+        print("增加了" + studentMapper.addStudent(buildStudent()) + "个学生");
+        print(studentMapper.getStudentById(1));
 
         sqlSession.close();
     }
@@ -113,8 +119,8 @@ public class StudentMapperTest {
         StudentMapper studentMapper = sqlSession1.getMapper(StudentMapper.class);
         StudentMapper studentMapper2 = sqlSession2.getMapper(StudentMapper.class);
 
-        System.out.println("studentMapper读取数据: " + studentMapper.getStudentById(1));
-        System.out.println("studentMapper2读取数据: " + studentMapper2.getStudentById(1));
+        print("studentMapper读取数据: " + studentMapper.getStudentById(1));
+        print("studentMapper2读取数据: " + studentMapper2.getStudentById(1));
 
     }
 
@@ -132,10 +138,19 @@ public class StudentMapperTest {
         StudentMapper studentMapper = sqlSession1.getMapper(StudentMapper.class);
         StudentMapper studentMapper2 = sqlSession2.getMapper(StudentMapper.class);
 
-        System.out.println("studentMapper读取数据: " + studentMapper.getStudentById(1));
-        sqlSession1.close();
-        System.out.println("studentMapper2读取数据: " + studentMapper2.getStudentById(1));
+        print("studentMapper读取数据: " + studentMapper.getStudentById(1));
+        sqlSession1.commit();
+        print("studentMapper2读取数据: " + studentMapper2.getStudentById(1));
+        print("studentMapper读取数据: " + studentMapper.getStudentById(1));
 
+        print("studentMapper读取数据: " + studentMapper.getStudentById(2));
+        sqlSession1.commit();
+        print("studentMapper2读取数据: " + studentMapper2.getStudentById(2));
+
+        print("studentMapper读取数据: " + studentMapper.getStudentById(1));
+        print("studentMapper2读取数据: " + studentMapper2.getStudentById(1));
+
+        print("studentMapper2读取数据: " + studentMapper2.getStudentByAnnotation());
     }
 
     /**
@@ -223,6 +238,11 @@ public class StudentMapperTest {
         sqlSession3.commit();
 
         System.out.println("studentMapper2读取数据: " + studentMapper2.getStudentByIdWithClassInfo(1));
+    }
+
+    private void print(Object o) {
+        System.out.println(o);
+        System.out.println("=================================================================");
     }
 
 

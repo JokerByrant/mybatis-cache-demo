@@ -1,4 +1,4 @@
-package typehandler;
+package typehandler.enumTypeHandler;
 
 /**
  * @author sxh

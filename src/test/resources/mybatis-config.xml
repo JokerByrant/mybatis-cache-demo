@@ -19,7 +19,7 @@
     <typeAliases>
         <typeAlias alias="Student" type="entity.StudentEntity"/>
         <typeAlias alias="MySimpleTypeHandler" type="typehandler.MySimpleTypeHandler"/>
-        <typeAlias alias="MyEnumTypeHandler" type="typehandler.MyEnumTypeHandler"/>
+        <typeAlias alias="MyEnumTypeHandler" type="typehandler.enumTypeHandler.MyEnumTypeHandler"/>
     </typeAliases>
 
     <typeHandlers>
@@ -44,7 +44,8 @@
 
     <!--SQL映射文件,mybatis的核心-->
     <mappers>
-        <mapper resource="mapper/studentMapper.xml"/>
-        <mapper resource="mapper/classMapper.xml"/>
+        <!--<mapper resource="mapper/studentMapper.xml"/>-->
+        <!--<mapper resource="mapper/classMapper.xml"/>-->
+        <package name="mapper"/>
     </mappers>
 </configuration>

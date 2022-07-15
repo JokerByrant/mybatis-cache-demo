@@ -4,7 +4,8 @@
     <!--开启缓存-->
     <cache/>
     <!--与StudentMapper共用一个Cache缓存对象，也就是共用一个缓存空间-->
-    <!--<cache-ref namespace="mapper.StudentMapper"/>-->
+    <!--如果cache和cahce-ref都配置了，以cache为准-->
+    <cache-ref namespace="mapper.StudentMapper"/>
     <update id="updateClassName">
         UPDATE class SET name = #{name} WHERE id = #{id}
     </update>
