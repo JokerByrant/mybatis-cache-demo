@@ -4,7 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <!--配置文件地址-->
-    <properties resource="local-mysql.properties"/>
+    <properties resource="local-mysql.properties">
+        <!--在这里指定分页的两个配置-->
+        <property name="pageSqlId" value=".*Page$"/>
+        <property name="dialect" value="mysql"/>
+    </properties>
 
     <settings>
         <!--一级缓存作用范围, Session: 一次SqlSession中, Statement: 一次查询-->
@@ -29,6 +33,7 @@
 
     <plugins>
         <plugin interceptor="plugin.MySimpleInterceptor"/>
+        <plugin interceptor="plugin.pageHelper.MyPageHelper" />
     </plugins>
 
     <environments default="development">

@@ -45,6 +45,9 @@
     <select id="getStudentByAnnotation" resultMap="BaseResultMap" useCache="true">
         SELECT * FROM student where id = 1
     </select>
+    <select id="queryByPage" resultType="entity.StudentEntity">
+        select * from student
+    </select>
 </mapper>
 
 

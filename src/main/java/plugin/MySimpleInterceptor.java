@@ -17,7 +17,7 @@ import java.util.Properties;
 @Intercepts({@Signature(type = Executor.class, method ="query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
 public class MySimpleInterceptor implements Interceptor {
     public Object intercept(Invocation invocation) throws Throwable {
-        System.out.println("MySimpleInterceptor 被触发啦！");
+        // System.out.println("自定义逻辑在这里运行！");
         // //通过invocation.proceed()方法完成调用链的推进
         return invocation.proceed();
     }

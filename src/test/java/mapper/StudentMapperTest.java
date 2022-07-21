@@ -7,6 +7,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import plugin.pageHelper.PageParameter;
+
+import java.util.List;
 
 public class StudentMapperTest {
 
@@ -238,6 +241,16 @@ public class StudentMapperTest {
         sqlSession3.commit();
 
         System.out.println("studentMapper2读取数据: " + studentMapper2.getStudentByIdWithClassInfo(1));
+    }
+
+    @Test
+    public void testMySimplePageHelper() {
+        SqlSession sqlSession1 = factory.openSession(true); // 自动提交事务
+        StudentMapper studentMapper = sqlSession1.getMapper(StudentMapper.class);
+
+        PageParameter pageParameter = new PageParameter(1, 2);
+        List<StudentEntity> studentEntities = studentMapper.queryByPage(pageParameter);
+        print("数据总量：" + pageParameter.getTotalCount() + ", 当前页：" + pageParameter.getCurrentPage() + ", 总页数：" + pageParameter.getTotalPage() + ", " + studentEntities);
     }
 
     private void print(Object o) {

@@ -2,6 +2,7 @@ package mapper;
 
 import entity.StudentEntity;
 import org.apache.ibatis.annotations.Param;
+import plugin.pageHelper.PageParameter;
 
 import java.util.List;
 import java.util.Map;
@@ -27,4 +28,6 @@ public interface StudentMapper {
 	 */
 	// @Select("select * from student")
 	List<StudentEntity> getStudentByAnnotation();
+
+	List<StudentEntity> queryByPage(PageParameter page);
 }
