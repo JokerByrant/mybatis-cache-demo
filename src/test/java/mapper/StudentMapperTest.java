@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import plugin.pageHelper.PageParameter;
 
+import java.sql.*;
+import java.util.Date;
 import java.util.List;
 
 public class StudentMapperTest {
@@ -251,6 +253,38 @@ public class StudentMapperTest {
         PageParameter pageParameter = new PageParameter(1, 2);
         List<StudentEntity> studentEntities = studentMapper.queryByPage(pageParameter);
         print("数据总量：" + pageParameter.getTotalCount() + ", 当前页：" + pageParameter.getCurrentPage() + ", 总页数：" + pageParameter.getTotalPage() + ", " + studentEntities);
+    }
+
+    // 测试创建Connection耗费的时间
+    @Test
+    public void testUnpooledDataSource() throws ClassNotFoundException, SQLException {
+        String sql = "select * from student where id = ?";
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        long beforeTimeOffset = -1L; //创建Connection对象前时间
+        long afterTimeOffset = -1L; //创建Connection对象后时间
+        long executeTimeOffset = -1L; //创建Connection对象后时间
+
+        Connection con = null;
+        Class.forName("com.mysql.jdbc.Driver");
+
+        beforeTimeOffset = new Date().getTime();
+        System.out.println("before:\t" + beforeTimeOffset);
+
+        con = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "123456");
+
+        afterTimeOffset = new Date().getTime();
+        System.out.println("after:\t\t" + afterTimeOffset);
+        System.out.println("Create Costs:\t\t" + (afterTimeOffset - beforeTimeOffset) + " ms");
+
+        st = con.prepareStatement(sql);
+        //设置参数
+        st.setInt(1, 1);
+        //查询，得出结果集
+        rs = st.executeQuery();
+        executeTimeOffset = new Date().getTime();
+        System.out.println("Exec Costs:\t\t" + (executeTimeOffset - afterTimeOffset) + " ms");
     }
 
     private void print(Object o) {

@@ -24,6 +24,8 @@ import java.util.Properties;
 
 /**
  * 实现自定义的分页组件
+ * 原理：将分页参数以属性传入select语句中，然后在sql的解析阶段将这些属性写入sql中。
+ * 而sql的解析是在StatementHandler里完成的，所以为了重写sql需要拦截StatementHandler。
  * @author sxh
  * @date 2022/7/21
  */
